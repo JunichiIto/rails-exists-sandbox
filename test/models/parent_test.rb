@@ -18,4 +18,9 @@ class ParentTest < ActiveSupport::TestCase
     parents = Parent.children_name_with('r').order(:name)
     assert_equal [parents(:misae)], parents
   end
+
+  test ".without_children" do
+    parents = Parent.without_children.order(:name)
+    assert_equal [parents(:golgo13)], parents
+  end
 end
