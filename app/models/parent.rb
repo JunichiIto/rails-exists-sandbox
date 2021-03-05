@@ -6,7 +6,7 @@ class Parent < ApplicationRecord
   # end
 
   # scope :children_name_with, -> (str) do
-  #   ids = Parent.joins(:children).where("LOWER(children.name) LIKE ?", "%#{str.downcase}%").select(:id)
+  #   ids = Child.where("LOWER(children.name) LIKE ?", "%#{str.downcase}%").select(:parent_id)
   #   where(id: ids)
   # end
 
@@ -46,7 +46,7 @@ class Parent < ApplicationRecord
   end
 
   # scope :without_children, -> do
-  #   ids = Parent.joins(:children).select(:id)
+  #   ids = Child.select(:parent_id)
   #   where.not(id: ids)
   # end
 end
