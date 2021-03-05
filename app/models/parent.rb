@@ -11,15 +11,22 @@ class Parent < ApplicationRecord
   # end
 
   scope :children_name_with, -> (str) do
-    sql = <<~SQL
-      EXISTS (
-        SELECT *
-        FROM children c
-        WHERE c.parent_id = parents.id
-        AND LOWER(c.name) LIKE ?
+    # sql = <<~SQL
+    #   EXISTS (
+    #     SELECT *
+    #     FROM children c
+    #     WHERE c.parent_id = parents.id
+    #     AND LOWER(c.name) LIKE ?
+    #   )
+    # SQL
+    # where(sql, "%#{str.downcase}%")
+    where(
+      'EXISTS (:children)',
+      children: Child.where(
+        "children.parent_id = parents.id AND LOWER(children.name) LIKE ?",
+        "%#{str.downcase}%"
       )
-    SQL
-    where(sql, "%#{str}%")
+    )
   end
 
   # scope :without_children, -> do
@@ -27,14 +34,15 @@ class Parent < ApplicationRecord
   # end
 
   scope :without_children, -> do
-    sql = <<~SQL
-      NOT EXISTS (
-        SELECT *
-        FROM children c
-        WHERE c.parent_id = parents.id
-      )
-    SQL
-    where(sql)
+    # sql = <<~SQL
+    #   NOT EXISTS (
+    #     SELECT *
+    #     FROM children c
+    #     WHERE c.parent_id = parents.id
+    #   )
+    # SQL
+    # where(sql)
+    where('NOT EXISTS (:children)', children: Child.where("children.parent_id = parents.id"))
   end
 
   # scope :without_children, -> do
